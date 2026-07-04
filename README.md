@@ -10,20 +10,20 @@ A polished, interactive portfolio built for an aspiring security engineer. This 
 
 ---
 
-## ✨ Key Features
+##  Key Features
 
-### 1. 🔒 Recruiter Access Gate (Secure CV Download)
+### 1.  Recruiter Access Gate (Secure CV Download)
 - Password-protected resume download modal to prevent unauthorized access to personal details.
 - Server-side verification using a SHA-256 hash stored in an environment variable; the application never stores or logs plain-text passcodes.
 - IP-keyed rate limiting: after a configurable number of failed attempts (default: 5), the client IP is temporarily blocked to deter brute-force attacks.
 - Secure streaming: the resume is kept outside the public static directory (`/private`) and streamed with safe headers to force download and prevent MIME sniffing.
 
-### 2. 🌌 Immersive Interactive Visuals
+### 2.  Immersive Interactive Visuals
 - 3D Cyber Globe: lightweight Canvas-based globe animation visualizing connections and telemetry.
 - Physics-based Network Topology: interactive node network that reacts to user input and resizing.
 - Cyberpunk Aesthetic: glassmorphism overlays, neon glows, and a responsive custom SVG cursor.
 
-### 3. 📱 Responsive Content Sections
+### 3.  Responsive Content Sections
 - About / Profile
 - Skill Matrix (security, languages, systems, tools)
 - Selected Projects (with performance metrics where applicable)
@@ -32,7 +32,7 @@ A polished, interactive portfolio built for an aspiring security engineer. This 
 
 ---
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 - Framework: Next.js 16 (App Router)
 - Library: React 19
@@ -44,7 +44,7 @@ A polished, interactive portfolio built for an aspiring security engineer. This 
 
 ---
 
-## 📂 Project Structure
+##  Project Structure
 
 ```
 portfolio-web/
@@ -81,7 +81,7 @@ portfolio-web/
 
 ---
 
-## 🛡️ Security Implementation Details
+##  Security Implementation Details
 
 ### Rate Limiting Logic (`src/utils/security.ts`)
 The rate limiter stores attempts in an in-memory Map keyed by the client's remote IP address:
@@ -124,13 +124,13 @@ export async function POST(req: Request) {
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
-### 📋 Prerequisites
+###  Prerequisites
 - Node.js v20.x or higher
 - npm or yarn
 
-### 🔧 Installation & Setup
+###  Installation & Setup
 
 1. Clone the repository:
 
@@ -169,7 +169,7 @@ Open http://localhost:3000 to view the site.
 
 ---
 
-## 🤝 Connect
+##  Connect
 
 - Email: thenulive@outlook.com
 - LinkedIn: https://linkedin.com/in/thenuladew
