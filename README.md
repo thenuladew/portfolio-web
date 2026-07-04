@@ -4,50 +4,50 @@
 [![React](https://img.shields.io/badge/React-19.0-blue?style=flat-circle&logo=react)](https://react.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4.0-38bdf8?style=flat-circle&logo=tailwind-css)](https://tailwindcss.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=flat-circle&logo=typescript)](https://www.typescriptlang.org/)
-[![Security](https://img.shields.io/badge/Security-SHA--256_%26_Rate_Limiting-cyan?style=flat-circle&logo=shields.io)](https://github.com/thenuladew/portfolio-website)
+[![Security](https://img.shields.io/badge/Security-SHA--256_%26_Rate_Limiting-cyan?style=flat-circle&logo=shields.io)](https://github.com/thenuladew/portfolio-web)
 
-A premium, highly interactive portfolio application custom-built for an aspiring security engineer. Built on a modern tech stack utilizing **Next.js 16**, **React 19**, and **Tailwind CSS v4**, this application incorporates high-fidelity canvas animations, glassmorphism, custom cursor interactions, and a secured CV download gate.
+A polished, interactive portfolio built for an aspiring security engineer. This project showcases modern frontend techniques together with security-minded server routes for gated CV access.
 
 ---
 
 ## ✨ Key Features
 
 ### 1. 🔒 Recruiter Access Gate (Secure CV Download)
-To prevent unauthorized downloads of personal details, the portfolio features an authentication-gated resume download modal.
-* **Server-Side Verification**: Passwords entered by visitors are hashed client-side/server-side using SHA-256 and compared against the environment hash. No plain-text passcodes are ever exposed in client code.
-* **IP-Keyed Rate Limiting**: Features an in-memory client IP rate limiter. If a client attempts to brute-force the passcode, they are restricted to **5 attempts**, after which they are locked out for **15 minutes**.
-* **Secure Streaming**: The file is kept outside the public static directory (`/private`) and streamed directly as a binary buffer response with secure security headers (`X-Content-Type-Options: nosniff`, `Cache-Control: no-store`).
+- Password-protected resume download modal to prevent unauthorized access to personal details.
+- Server-side verification using a SHA-256 hash stored in an environment variable; the application never stores or logs plain-text passcodes.
+- IP-keyed rate limiting: after a configurable number of failed attempts (default: 5), the client IP is temporarily blocked to deter brute-force attacks.
+- Secure streaming: the resume is kept outside the public static directory (`/private`) and streamed with safe headers to force download and prevent MIME sniffing.
 
 ### 2. 🌌 Immersive Interactive Visuals
-* **3D Cyber Globe**: A custom, lightweight HTML5 Canvas-based 3D globe visualization animating global connections, telemetry data, and network attacks.
-* **Physics-Based Network Topology**: An interactive, dynamic node network where packets traverse visual routes, reacting to mouse proximity and window resizing.
-* **Cyberpunk Aesthetic**: Sleek glassmorphism overlays (`backdrop-filter`), background dot-grids, neon ambient glows, and a responsive custom SVG cursor that transitions seamlessly into a pointer state when hovering over interactive elements.
+- 3D Cyber Globe: lightweight Canvas-based globe animation visualizing connections and telemetry.
+- Physics-based Network Topology: interactive node network that reacts to user input and resizing.
+- Cyberpunk Aesthetic: glassmorphism overlays, neon glows, and a responsive custom SVG cursor.
 
-### 3. 📱 Optimized Responsive Sections
-* **01 — Profile / About**: SLIIT Cybersecurity undergraduate background, core principles, and professional values.
-* **02 — Skill Matrix**: Tabulated competencies across Cybersecurity, Programming Languages, Systems, and developer tools.
-* **03 — Selected Projects**: Showcases machine learning work (e.g. SMS Spam Classifier) with exact performance metrics (97.2% Accuracy) and GitHub repositories.
-* **04 — Writing / Blog**: Technical writeups in progress (DNS Poisoning, SQL Injection, Spring Security).
-* **05 — Contact**: Links to LinkedIn, Email, and GitHub.
+### 3. 📱 Responsive Content Sections
+- About / Profile
+- Skill Matrix (security, languages, systems, tools)
+- Selected Projects (with performance metrics where applicable)
+- Writing / Blog (technical writeups in progress)
+- Contact (email, LinkedIn, GitHub)
 
 ---
 
 ## 🛠️ Technology Stack
 
-* **Framework**: [Next.js 16 (App Router)](https://nextjs.org/)
-* **Library**: [React 19](https://react.dev/)
-* **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) with PostCSS
-* **Animations**: [Framer Motion](https://www.framer.com/motion/)
-* **Icons**: [Lucide React](https://lucide.dev/)
-* **Code Quality**: ESLint + TypeScript
-* **State & Logic**: React hooks (`useState`, `useEffect`, `useRef`, `useCallback`)
+- Framework: Next.js 16 (App Router)
+- Library: React 19
+- Styling: Tailwind CSS v4 with PostCSS
+- Animations: Framer Motion
+- Icons: Lucide React
+- Language: TypeScript
+- Tooling: ESLint, TypeScript types
 
 ---
 
-## 📂 Project Architecture
+## 📂 Project Structure
 
-```filepath
-portfolio-app/
+```
+portfolio-web/
 ├── private/
 │   └── Thenula_s_Resume.pdf     # Gated resume file (outside public assets)
 ├── src/
@@ -67,7 +67,7 @@ portfolio-app/
 │   │   │   ├── Projects.tsx
 │   │   │   └── Skills.tsx
 │   │   ├── CVModal.tsx          # Recruiter access modal UI with shake/timer effects
-│   │   ├── CustomCursor.tsx     # Custom SVG cursor positioning component
+│   │   ├── CustomCursor.tsx     # Custom SVG cursor component
 │   │   ├── CyberGlobe.tsx       # Canvas 3D globe animation logic
 │   │   ├── NetworkTopology.tsx  # Dynamic particle connection visualizer
 │   │   ├── Navbar.tsx           # Fixed glassmorphic navigation header
@@ -84,7 +84,8 @@ portfolio-app/
 ## 🛡️ Security Implementation Details
 
 ### Rate Limiting Logic (`src/utils/security.ts`)
-The rate limiter stores attempts inside an in-memory Map structure keyed by the user's remote IP address.
+The rate limiter stores attempts in an in-memory Map keyed by the client's remote IP address:
+
 ```typescript
 interface AttemptRecord {
   count: number;
@@ -92,23 +93,33 @@ interface AttemptRecord {
 }
 const store = new Map<string, AttemptRecord>();
 ```
-When a request arrives at `/api/cv`, the application retrieves the IP (resolving headers in order: `x-forwarded-for`, `x-real-ip`). If the IP is blocked, it returns a `429 Too Many Requests` response containing the remaining lock duration in a `Retry-After` header.
+
+On each request to the CV API, the server resolves the client's IP from headers (e.g. `x-forwarded-for`, `x-real-ip`) and checks `store`. If the count exceeds the configured limit, the API returns `429 Too Many Requests`. The limiter is intentionally simple (in-memory) and is suitable for single-instance deployments; for multi-instance or production scale, use a shared store (Redis) or a managed rate-limiting service.
 
 ### Secure File Download Stream (`src/app/api/cv/route.ts`)
-The resume is never stored in `public/`. Instead, it is placed in the project root's `private/` directory. Once password authentication is successful, the file is read and streamed securely:
-```typescript
-const cvPath = join(process.cwd(), 'private', 'Thenula_s_Resume.pdf');
-const cvBuffer = await readFile(cvPath);
+The resume is not served from `public/`. After successful authentication, the file is read from the `private/` folder and returned as a binary response with secure headers:
 
-return new NextResponse(cvBuffer, {
-  status: 200,
-  headers: {
-    'Content-Type': 'application/pdf',
-    'Content-Disposition': 'attachment; filename="Thenula_Dewanmith_CV.pdf"',
-    'X-Content-Type-Options': 'nosniff',
-    'Cache-Control': 'no-store, no-cache, must-revalidate',
-  },
-});
+```typescript
+import { NextResponse } from 'next/server';
+import { readFile } from 'fs/promises';
+import { join } from 'path';
+
+export async function POST(req: Request) {
+  // authentication & rate-limiting checks happen here
+
+  const cvPath = join(process.cwd(), 'private', 'Thenula_s_Resume.pdf');
+  const cvBuffer = await readFile(cvPath);
+
+  return new NextResponse(cvBuffer, {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': 'attachment; filename="Thenula_Dewanmith_CV.pdf"',
+      'X-Content-Type-Options': 'nosniff',
+      'Cache-Control': 'no-store, no-cache, must-revalidate',
+    },
+  });
+}
 ```
 
 ---
@@ -116,51 +127,51 @@ return new NextResponse(cvBuffer, {
 ## 🚀 Getting Started
 
 ### 📋 Prerequisites
-* Node.js v20.x or higher
-* npm or yarn
+- Node.js v20.x or higher
+- npm or yarn
 
 ### 🔧 Installation & Setup
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/thenuladew/portfolio-website.git
-   cd portfolio-website
-   ```
+1. Clone the repository:
 
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+```bash
+git clone https://github.com/thenuladew/portfolio-web.git
+cd portfolio-web
+```
 
-3. **Configure Environment Variables:**
-   Create a `.env.local` file in the root of the project:
-   ```env
-   CV_PASSWORD_HASH=your_sha256_passcode_hash
-   ```
+2. Install dependencies:
 
-4. **Generating the Passcode Hash:**
-   You can easily hash your desired access code (e.g., `MYPASSCODE`) into a SHA-256 hex string using Node.js:
-   ```bash
-   node -e "console.log(require('crypto').createHash('sha256').update('MYPASSCODE').digest('hex'))"
-   ```
-   Copy the generated hash and set it as the value of `CV_PASSWORD_HASH`.
+```bash
+npm install
+```
 
-5. **Place your Resume PDF:**
-   Ensure your resume PDF is named `Thenula_s_Resume.pdf` and placed inside the `/private` folder in the project root.
+3. Configure environment variables (create `.env.local`):
 
-6. **Run the development server:**
-   ```bash
-   npm run dev
-   ```
-   Open [http://localhost:3000](http://localhost:3000) with your browser to view the application.
+```env
+CV_PASSWORD_HASH=your_sha256_passcode_hash
+```
+
+4. Generate the passcode hash (example):
+
+```bash
+node -e "console.log(require('crypto').createHash('sha256').update('MYPASSCODE').digest('hex'))"
+```
+
+5. Place your resume PDF in the `private/` folder as `Thenula_s_Resume.pdf`.
+
+6. Run the development server:
+
+```bash
+npm run dev
+```
+
+Open http://localhost:3000 to view the site.
 
 ---
 
 ## 🤝 Connect
 
-* **Email**: [thenulive@outlook.com](mailto:thenulive@outlook.com)
-* **LinkedIn**: [linkedin.com/in/thenuladew](https://linkedin.com/in/thenuladew)
-* **GitHub**: [github.com/thenuladew](https://github.com/thenuladew)
-* **Education**: BSc (Hons) IT — Specializing in Cybersecurity, Sri Lanka Institute of Information Technology (SLIIT)
-#   p o r t f o l i o - w e b  
- 
+- Email: thenulive@outlook.com
+- LinkedIn: https://linkedin.com/in/thenuladew
+- GitHub: https://github.com/thenuladew
+- Education: BSc (Hons) IT — Cybersecurity, Sri Lanka Institute of Information Technology (SLIIT)
