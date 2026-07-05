@@ -14,8 +14,8 @@ interface Project {
   title: string;
   subtitle: string;
   description: string;
-  metric: string;
-  metricLabel: string;
+  metric?: string;
+  metricLabel?: string;
   tech: string[];
   github: string;
   demo?: string;
@@ -35,6 +35,18 @@ const PROJECTS: Project[] = [
     github: 'https://github.com/thenuladew/sms-spam-classifier',
     image: '/project-sms.png',
     accent: 'from-cyan-950/60 to-blue-950/60',
+  },
+  {
+    title: 'Secure Portfolio Platform',
+    subtitle: 'Cybersecurity · Web Development',
+    description:
+      'Designed and developed a production-ready portfolio platform using Next.js, featuring secure CV delivery through private Cloudflare R2 storage, protected API endpoints, automated CI/CD, responsive design, interactive animations, and performance optimization for a modern web experience.',
+    metric: 'A+',
+    metricLabel: 'Security Headers Grade',
+    tech: ['Next.js', 'TypeScript', 'Three.js', 'Framer Motion', 'Cloudflare R2', 'bcrypt'],
+    github: 'https://github.com/thenuladew/portfolio-web',
+    image: '/project-portfolio.png',
+    accent: 'from-emerald-950/60 to-cyan-950/60',
   },
 ];
 
@@ -113,14 +125,16 @@ export default function Projects() {
                     </p>
 
                     {/* Key metric */}
-                    <div className="inline-flex items-baseline gap-2 px-4 py-2.5 bg-neutral-900 border border-neutral-800 rounded-xl">
-                      <span className="text-2xl font-bold font-mono text-white">
-                        {project.metric}
-                      </span>
-                      <span className="text-[10px] font-mono tracking-wider text-neutral-500 uppercase">
-                        {project.metricLabel}
-                      </span>
-                    </div>
+                    {project.metric && project.metricLabel && (
+                      <div className="inline-flex items-baseline gap-2 px-4 py-2.5 bg-neutral-900 border border-neutral-800 rounded-xl">
+                        <span className="text-2xl font-bold font-mono text-white">
+                          {project.metric}
+                        </span>
+                        <span className="text-[10px] font-mono tracking-wider text-neutral-500 uppercase">
+                          {project.metricLabel}
+                        </span>
+                      </div>
+                    )}
 
                     {/* Tech stack */}
                     <div className="flex flex-wrap gap-1.5">
