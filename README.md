@@ -27,7 +27,7 @@ A polished, interactive portfolio built for an aspiring security engineer. This 
 - About / Profile
 - Skill Matrix (security, languages, systems, tools)
 - Selected Projects (with performance metrics where applicable)
-- Writing / Blog (technical writeups in progress)
+- Writing / Blog (technical writeups)
 - Contact (email, LinkedIn, GitHub)
 
 ---
