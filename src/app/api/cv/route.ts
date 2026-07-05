@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createHash } from 'crypto';
-import { readFile } from 'fs/promises';
-import { join } from 'path';
 import { checkRateLimit, recordFailedAttempt } from '@/utils/security';
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+
+const s3Client = new S3Client({
+  endpoint: process.env.R2_ENDPOINT,
+  credentials: {
+    accessKeyId: process.env.R2_ACCESS_KEY_ID || '',
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || '',
+  },
+  region: 'auto',
+});
 
 // Only accept POST — GET returns 405
 export async function GET() {
@@ -69,10 +77,24 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // ── 5. Stream the PDF ─────────────────────────────────────────
+  // ── 5. Stream the PDF from Cloudflare R2 ──────────────────────
   try {
-    const cvPath = join(process.cwd(), 'private', 'Thenula_s_Resume.pdf');
-    const cvBuffer = await readFile(cvPath);
+    const bucket = process.env.R2_BUCKET_NAME || 'portfolio-assets';
+    const key = process.env.R2_FILE_KEY || 'Thenula_s_Resume.pdf';
+
+    const command = new GetObjectCommand({
+      Bucket: bucket,
+      Key: key,
+    });
+
+    const s3Response = await s3Client.send(command);
+
+    if (!s3Response.Body) {
+      throw new Error('S3 response body is empty');
+    }
+
+    const cvBytes = await s3Response.Body.transformToByteArray();
+    const cvBuffer = Buffer.from(cvBytes);
 
     return new NextResponse(cvBuffer, {
       status: 200,
@@ -86,7 +108,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (err) {
-    console.error('[cv/route] Failed to read CV file:', err);
+    console.error('[cv/route] Failed to retrieve CV from Cloudflare R2:', err);
     return NextResponse.json(
       { error: 'CV file is currently unavailable. Please try again later.' },
       { status: 500 }
