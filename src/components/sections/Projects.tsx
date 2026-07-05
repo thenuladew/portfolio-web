@@ -41,7 +41,7 @@ const PROJECTS: Project[] = [
     subtitle: 'Cybersecurity · Web Development',
     description:
       'Designed and developed a production-ready portfolio platform using Next.js, featuring secure CV delivery through private Cloudflare R2 storage, protected API endpoints, automated CI/CD, responsive design, interactive animations, and performance optimization for a modern web experience.',
-    metric: 'A+',
+    metric: 'A',
     metricLabel: 'Security Headers Grade',
     tech: ['Next.js', 'TypeScript', 'Three.js', 'Framer Motion', 'Cloudflare R2', 'bcrypt'],
     github: 'https://github.com/thenuladew/portfolio-web',
