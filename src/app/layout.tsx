@@ -32,9 +32,6 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: 'Thenula Dewanmith' }],
   robots: 'index, follow',
-  icons: {
-    icon: '/icon.svg',
-  },
   openGraph: {
     title: 'Thenula Dewanmith | Aspiring Security Engineer',
     description:

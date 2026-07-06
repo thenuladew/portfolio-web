@@ -8,7 +8,7 @@ const NAV_LINKS = [
   { label: 'About', href: '#about' },
   { label: 'Skills', href: '#skills' },
   { label: 'Projects', href: '#projects' },
-  { label: 'Blog', href: '#blog' },
+  { label: 'Case Studies', href: '#case-studies' },
   { label: 'Contact', href: '#contact' },
 ] as const;
 
@@ -26,7 +26,7 @@ export default function Navbar({ onOpenCV }: NavbarProps) {
       setScrolled(window.scrollY > 48);
 
       // Active section tracking
-      const ids = ['about', 'skills', 'projects', 'blog', 'contact'];
+      const ids = ['about', 'skills', 'projects', 'case-studies', 'contact'];
       const offset = window.innerHeight * 0.35;
       for (const id of ids) {
         const el = document.getElementById(id);

@@ -14,9 +14,12 @@ export default function Footer() {
             © {year} Thenula Dewanmith
           </span>
         </div>
-        <span className="text-[10px] font-mono tracking-widest text-neutral-700 uppercase">
-          Built with Next.js · Tailwind · Framer Motion
-        </span>
+        <div className="flex items-center gap-2 text-neutral-700">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="text-[10px] font-mono tracking-widest uppercase">
+            SECURE PROTOCOL ACTIVE
+          </span>
+        </div>
       </div>
     </footer>
   );
