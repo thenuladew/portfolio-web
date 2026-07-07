@@ -32,12 +32,18 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: 'Thenula Dewanmith' }],
   robots: 'index, follow',
+  icons: {
+    icon: '/favicon.png',
+    shortcut: '/favicon.png',
+    apple: '/favicon.png',
+  },
   openGraph: {
     title: 'Thenula Dewanmith | Aspiring Security Engineer',
     description:
       'Exploring cybersecurity through hands-on projects, continuous learning, and a strong foundation in networking, Linux, and software development.',
     type: 'website',
     locale: 'en_US',
+    images: ['/wolf-logo.png'],
   },
 };
 
