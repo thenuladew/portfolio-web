@@ -1,4 +1,4 @@
-#  Thenula Dewanmith — Cybersecurity Portfolio
+#  Thenula_Dewanmith_Portfolio
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.2-black?style=flat-circle&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19.0-blue?style=flat-circle&logo=react)](https://react.dev/)
