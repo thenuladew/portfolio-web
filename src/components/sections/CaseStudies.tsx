@@ -7,18 +7,12 @@ import {
   ArrowRight,
   X,
   Shield,
-  Target,
-  Layers,
-  Lock,
-  AlertTriangle,
-  Lightbulb,
-  Rocket,
-  CheckCircle2,
   ChevronDown,
   Server,
   Globe,
   KeyRound,
   Database,
+  Lock,
 } from 'lucide-react';
 
 /* ─── Data Types ─── */
@@ -56,6 +50,7 @@ interface CaseStudy {
   tag: string;
   title: string;
   excerpt: string;
+  intro: string;
   readTime: string;
   date: string;
   objectives: string[];
@@ -76,26 +71,28 @@ const CASE_STUDY: CaseStudy = {
   tag: 'Cybersecurity · Secure Development',
   title: 'Building a Security-First Portfolio Platform',
   excerpt:
-    'A deep dive into how I built this portfolio website with security engineering principles at its core — private cloud storage, defense-in-depth headers, server-side authentication, and rate limiting.',
+    'How I built this portfolio with security actually baked in — not bolted on afterwards. Private cloud storage, bcrypt auth, rate limiting, and a bunch of headers most people skip.',
+  intro:
+    'Most portfolios are just static pages. I wanted mine to actually show the security concepts I\'d been learning — so I built it with private file delivery, proper server-side auth, and the kind of security headers you\'d find in a real production system, not a side project. It started as a way to have something to show recruiters, and ended up being a decent learning exercise.',
   readTime: '12 min read',
   date: 'July 2025',
   objectives: [
-    'Build a portfolio that demonstrates security engineering principles in practice',
-    'Implement secure file delivery without exposing assets via public URLs',
-    'Apply defense-in-depth — security headers, private storage, input validation, rate limiting',
-    'Practice secure deployment workflows with environment isolation',
-    'Gain hands-on experience with cloud object storage security',
-    'Develop skills in Secure Software Development Lifecycle (SSDLC)',
+    'Show security principles through a real working project, not just theory',
+    'Serve files securely without ever exposing a public storage URL',
+    'Layer multiple controls — headers, private storage, validation, rate limiting',
+    'Keep dev and production secrets properly separated',
+    'Actually get comfortable with cloud object storage security',
+    'Build with the SSDLC in mind from the start',
   ],
   techStack: [
-    { technology: 'Next.js', purpose: 'Frontend framework with API routes for backend logic' },
-    { technology: 'TypeScript', purpose: 'Type safety to reduce runtime vulnerabilities' },
+    { technology: 'Next.js', purpose: 'Frontend + API routes so I could keep the backend logic in one place' },
+    { technology: 'TypeScript', purpose: 'Catches a whole class of bugs before they ever run' },
     { technology: 'Tailwind CSS', purpose: 'Utility-first styling' },
-    { technology: 'Framer Motion', purpose: 'UI animations and transitions' },
-    { technology: 'Cloudflare R2', purpose: 'Private object storage for sensitive files' },
-    { technology: 'bcrypt (SHA-256)', purpose: 'Server-side password verification' },
-    { technology: 'Vercel', purpose: 'Deployment with automatic HTTPS enforcement' },
-    { technology: 'GitHub', purpose: 'Version control and CI/CD integration' },
+    { technology: 'Framer Motion', purpose: 'Animations and transitions' },
+    { technology: 'Cloudflare R2', purpose: 'Private object storage — no public endpoint, ever' },
+    { technology: 'bcrypt (SHA-256)', purpose: 'Password hashing and verification, all server-side' },
+    { technology: 'Vercel', purpose: 'Handles TLS automatically, easy env var management' },
+    { technology: 'GitHub', purpose: 'Version control and CI/CD' },
   ],
   architecture: [
     {
@@ -136,161 +133,145 @@ const CASE_STUDY: CaseStudy = {
     {
       title: 'Secure CV Download',
       points: [
-        'Password-protected endpoint with server-side verification',
-        'Private Cloudflare R2 storage — no public bucket access',
-        'IP-based rate limiting with automatic lockout after 5 failed attempts',
-        'bcrypt hashing — plaintext password never touches the client',
+        'Password-protected endpoint — verification happens on the server, not in the browser',
+        'CV lives in a private Cloudflare R2 bucket, no public URL exists for it',
+        'After 5 wrong password attempts, the IP gets locked out for 15 minutes',
+        'The plaintext password never leaves the server — bcrypt handles everything',
       ],
       highlight:
-        'Rather than exposing the CV through a public URL, download requests are handled by the backend, which retrieves the file from a private Cloudflare R2 bucket. This approach prevents direct enumeration of storage objects and provides greater control over file access.',
+        'I didn\'t want the CV just sitting behind a public link anyone could stumble across. Instead, download requests go through the backend, which fetches the file directly from R2 and streams it to the user. The bucket URL never touches the client.',
     },
     {
       title: 'Responsive Design',
-      points: ['Mobile-first responsive layout', 'Desktop-optimized viewing experience', 'Performance-optimized asset loading'],
+      points: ['Mobile-first layout that actually works on small screens', 'Desktop view has more breathing room and better use of space', 'Assets load without making the page feel sluggish'],
     },
     {
       title: 'Project Showcase',
-      points: ['Interactive project cards with hover effects', 'Technology stack tags', 'Direct links to GitHub repositories and live demos'],
+      points: ['Project cards with hover effects that feel snappy', 'Tech tags so you can see the stack at a glance', 'Links to GitHub repos and live demos where available'],
     },
     {
       title: 'Contact Section',
-      points: ['Professional email contact', 'GitHub profile link', 'LinkedIn profile integration'],
+      points: ['Email, GitHub, and LinkedIn — the usual spots to reach me'],
     },
   ],
   security: [
     {
       measure: 'Content Security Policy (CSP)',
-      implementation: 'Restricts script sources and prevents inline script execution',
+      implementation: 'Locks down which scripts can run — inline scripts are blocked',
       threat: 'Cross-Site Scripting (XSS)',
     },
     {
       measure: 'X-Frame-Options',
-      implementation: 'Set to DENY — prevents the site from being embedded in iframes',
+      implementation: 'Set to DENY so the site can\'t be loaded inside an iframe',
       threat: 'Clickjacking attacks',
     },
     {
       measure: 'X-Content-Type-Options',
-      implementation: 'Set to nosniff — prevents MIME-type sniffing',
+      implementation: 'nosniff — tells browsers not to guess the content type',
       threat: 'MIME-type confusion attacks',
     },
     {
       measure: 'Referrer-Policy',
-      implementation: 'strict-origin-when-cross-origin — limits referrer data sent to other origins',
+      implementation: 'strict-origin-when-cross-origin — cuts down on how much referrer info gets sent to other sites',
       threat: 'Information leakage via referrer headers',
     },
     {
       measure: 'Permissions-Policy',
-      implementation: 'Disables camera, microphone, and geolocation APIs',
+      implementation: 'Camera, microphone, and geolocation are all disabled — this portfolio has no business using any of that',
       threat: 'Unauthorized browser API access',
     },
     {
       measure: 'Private Object Storage',
-      implementation: 'Cloudflare R2 bucket configured with no public endpoint',
+      implementation: 'The R2 bucket has no public endpoint at all — files can\'t be browsed or guessed directly',
       threat: 'Direct file enumeration and unauthorized downloads',
     },
     {
       measure: 'Server-Side Password Verification',
-      implementation: 'bcrypt hashing with comparison performed entirely on the backend',
+      implementation: 'bcrypt comparison runs entirely on the backend — the client never sees the hash',
       threat: 'Password exposure and client-side bypass',
     },
     {
       measure: 'Rate Limiting',
-      implementation: '5 attempts per IP address with 15-minute lockout period',
+      implementation: '5 attempts per IP, then a 15-minute cooldown kicks in automatically',
       threat: 'Brute-force attacks on the CV endpoint',
     },
     {
       measure: 'HTTPS Enforcement',
-      implementation: 'Vercel auto-TLS with HSTS headers',
+      implementation: 'Vercel handles TLS, HSTS headers make sure browsers always use HTTPS going forward',
       threat: 'Man-in-the-middle attacks and data interception',
     },
     {
       measure: 'Environment Variable Isolation',
-      implementation: 'Secrets stored in Vercel environment variables, never committed to source code',
+      implementation: 'Secrets live in Vercel env vars for production, .env.local for dev — never committed to the repo',
       threat: 'Secret leakage via repository exposure',
     },
     {
       measure: 'Input Validation',
-      implementation: 'Server-side validation of all API request bodies',
+      implementation: 'All API request bodies are validated server-side before anything else runs',
       threat: 'Injection attacks and malformed request exploitation',
     },
   ],
   challenges: [
     {
-      problem: 'Configuring Cloudflare R2 for private-only access',
+      problem: 'Getting Cloudflare R2 configured for private-only access',
       solution:
-        'Used service tokens with minimal permissions and verified no public endpoint was exposed. Tested access patterns to confirm objects cannot be enumerated externally.',
+        'Took a bit of trial and error. I used service tokens with the minimum permissions needed and manually checked there was no public endpoint exposed. Then ran some tests to make sure objects couldn\'t be enumerated from outside.',
     },
     {
-      problem: 'Implementing secure file downloads without exposing bucket URLs',
+      problem: 'Streaming a file from R2 without leaking the bucket URL to the client',
       solution:
-        'The API route fetches the file server-side from R2 and streams it directly to the client. No pre-signed URL or bucket path is ever sent to the browser.',
+        'The API route fetches the file server-side and pipes it straight to the response. The browser only ever sees the download — no bucket path, no pre-signed URL, nothing to grab.',
     },
     {
-      problem: 'Managing secrets across local development and production',
+      problem: 'Keeping secrets out of the repo across both local dev and production',
       solution:
-        'Used environment variable separation — .env.local for development, Vercel dashboard for production. Added .env files to .gitignore to prevent accidental commits.',
+        'Used .env.local for local development and Vercel\'s dashboard for production secrets. Added .env* to .gitignore early so there was never a chance of committing anything sensitive by accident.',
     },
     {
-      problem: 'Preventing brute-force attacks on the CV endpoint',
+      problem: 'Stopping brute-force attempts on the CV password endpoint',
       solution:
-        'Implemented IP-based rate limiting with attempt tracking. After 5 failed attempts, the IP is locked out for 15 minutes. Both server-side enforcement and client-side UX feedback are provided.',
+        'Built IP-based rate limiting with a simple attempt counter. Hit 5 failures and you\'re locked out for 15 minutes. The UI also shows feedback so it\'s clear what\'s happening — not just a silent block.',
     },
     {
-      problem: 'Setting security headers without breaking site functionality',
+      problem: 'Getting the Content Security Policy right without breaking anything',
       solution:
-        'Iteratively tested Content Security Policy directives. Started with report-only mode to identify false positives before switching to enforcement mode.',
+        'Started in report-only mode to see what would get blocked before enforcing it for real. Caught a couple of false positives with fonts and Framer Motion, fixed those, then switched to enforcement.',
     },
     {
-      problem: 'MIME type issues with CV file download',
+      problem: 'CV file downloading as gibberish instead of opening as a PDF',
       solution:
-        'Explicitly set Content-Type to application/pdf and Content-Disposition to attachment with the filename, ensuring browsers handle the download correctly.',
+        'Had to explicitly set Content-Type to application/pdf and add Content-Disposition with the filename. Without those, some browsers had no idea what to do with the response.',
     },
   ],
   lessonsLearned: [
-    'Defense in depth — no single security control is sufficient. Layering headers, authentication, rate limiting, and private storage creates meaningful protection.',
-    'Threat modeling — thinking about what could go wrong (brute-force, direct access, XSS) before writing code leads to better architecture decisions.',
-    'Secrets management — understanding the difference between build-time and runtime environment variables is critical for secure deployments.',
-    'Security headers — a simple configuration step that significantly reduces the attack surface of any web application.',
-    'Cloud storage security — private buckets with controlled access patterns are applicable far beyond portfolios.',
-    'Secure development lifecycle — integrating security considerations from the start rather than bolting them on afterwards produces stronger systems.',
+    'Defense in depth — one control on its own isn\'t enough. Layering headers, auth, rate limiting, and private storage is what actually makes a difference.',
+    'Threat modeling early — thinking about what could go wrong before writing code genuinely changed some of my architecture decisions.',
+    'Secrets management — there\'s a real difference between build-time and runtime env vars, and getting it wrong can expose things you didn\'t intend to.',
+    'Security headers — one of the easiest wins you can get. A few lines of config and your attack surface shrinks noticeably.',
+    'Cloud storage security — private buckets with controlled access aren\'t just a portfolio thing. This pattern comes up all the time.',
+    'Security from the start — retrofitting it afterwards is way harder. Building it in from the beginning just makes everything cleaner.',
   ],
   futureImprovements: [
     'Download analytics with anomaly detection',
-    'CAPTCHA integration for the CV endpoint',
+    'CAPTCHA on the CV endpoint',
     'Audit logging for all access attempts',
     'Automated dependency vulnerability scanning (Dependabot / Snyk)',
-    'CI/CD pipeline with SAST security scanning',
+    'CI/CD pipeline with SAST scanning',
     'Docker containerization with hardened base images',
     'Web Application Firewall (WAF) rules',
     'Subresource Integrity (SRI) for external resources',
   ],
   conclusion:
-    'This project evolved beyond a personal portfolio into a practical exercise in secure software engineering. By treating even a simple portfolio as a system worth protecting, I applied defense-in-depth principles, secure cloud storage patterns, and security header hardening — skills directly transferable to enterprise security engineering. It demonstrates that security isn\'t just for large-scale systems; it\'s a mindset that should be applied to every piece of software we build.',
+    'Honestly, this started as just a portfolio site. But treating it as something worth actually securing turned it into a real learning exercise. I got hands-on with private cloud storage, security headers, bcrypt auth, and rate limiting — not from a tutorial, but by figuring out what could go wrong and fixing it. That mindset is what I want to bring to every project I work on.',
 };
 
-/* ─── Section Header Component ─── */
+/* ─── Section Label ─── */
 
-function SectionHeader({
-  icon: Icon,
-  title,
-  number,
-}: {
-  icon: React.ElementType;
-  title: string;
-  number: string;
-}) {
+function SectionLabel({ children }: { children: string }) {
   return (
-    <div className="flex items-center gap-3 mb-5">
-      <div className="p-2 bg-neutral-900 border border-neutral-800 rounded-lg">
-        <Icon className="w-4 h-4 text-cyan-400" />
-      </div>
-      <div>
-        <span className="text-[10px] font-mono tracking-widest text-neutral-600 uppercase">
-          {number}
-        </span>
-        <h3 className="text-base font-semibold text-white tracking-tight">{title}</h3>
-      </div>
-    </div>
+    <p className="text-[10px] font-mono tracking-widest text-neutral-600 uppercase mb-4">
+      {children}
+    </p>
   );
 }
 
@@ -387,64 +368,46 @@ function CaseStudyModal({
             </div>
 
             {/* Content */}
-            <div className="relative px-6 md:px-10 py-8 space-y-12">
-              {/* ── 1. Objectives ── */}
-              <section>
-                <SectionHeader icon={Target} title="Objectives" number="01" />
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="relative px-6 md:px-10 py-8">
+
+              {/* ── Intro ── */}
+              <div className="mb-8 pb-8 border-b border-neutral-900">
+                <p className="text-neutral-300 text-sm leading-relaxed mb-5">{study.intro}</p>
+                <div className="space-y-2">
                   {study.objectives.map((obj, i) => (
-                    <div
-                      key={i}
-                      className="flex items-start gap-3 p-3.5 bg-neutral-950 border border-neutral-900 rounded-xl"
-                    >
-                      <CheckCircle2 className="w-4 h-4 text-cyan-400 mt-0.5 shrink-0" />
-                      <span className="text-sm text-neutral-300 leading-relaxed">{obj}</span>
+                    <div key={i} className="flex items-start gap-2.5 text-sm text-neutral-500">
+                      <span className="text-cyan-400/40 shrink-0 mt-0.5">→</span>
+                      <span className="leading-relaxed">{obj}</span>
                     </div>
                   ))}
                 </div>
-              </section>
+              </div>
 
-              {/* ── 2. Tech Stack ── */}
-              <section>
-                <SectionHeader icon={Layers} title="Tech Stack" number="02" />
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b border-neutral-800">
-                        <th className="text-left py-3 px-4 text-[10px] font-mono tracking-widest text-neutral-500 uppercase">
-                          Technology
-                        </th>
-                        <th className="text-left py-3 px-4 text-[10px] font-mono tracking-widest text-neutral-500 uppercase">
-                          Purpose
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {study.techStack.map((item, i) => (
-                        <tr
-                          key={i}
-                          className="border-b border-neutral-900/50 hover:bg-neutral-950 transition-colors"
-                        >
-                          <td className="py-3 px-4 font-mono text-cyan-400 text-xs">
-                            {item.technology}
-                          </td>
-                          <td className="py-3 px-4 text-neutral-400 text-xs">{item.purpose}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+              {/* ── The Stack ── */}
+              <div className="mb-8 pb-8 border-b border-neutral-900">
+                <SectionLabel>The Stack</SectionLabel>
+                <div className="flex flex-wrap gap-2">
+                  {study.techStack.map((item) => (
+                    <div key={item.technology} className="group relative">
+                      <span className="inline-block text-xs font-mono px-3 py-1.5 bg-neutral-900 border border-neutral-800 text-cyan-400 rounded-lg hover:border-cyan-800/60 transition-colors cursor-default">
+                        {item.technology}
+                      </span>
+                      <div className="absolute bottom-full left-0 mb-2 px-2.5 py-1.5 bg-neutral-900 border border-neutral-800 rounded-lg text-xs text-neutral-400 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 shadow-lg">
+                        {item.purpose}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </section>
+              </div>
 
-              {/* ── 3. Architecture ── */}
-              <section>
-                <SectionHeader icon={Server} title="Architecture" number="03" />
+              {/* ── Request Flow ── */}
+              <div className="mb-8 pb-8 border-b border-neutral-900">
+                <SectionLabel>Request Flow</SectionLabel>
                 <div className="flex flex-col items-center gap-0">
                   {study.architecture.map((step, i) => {
                     const StepIcon = step.icon;
                     return (
                       <div key={i} className="flex flex-col items-center w-full max-w-lg">
-                        {/* Step card */}
                         <div className="w-full bg-neutral-950 border border-neutral-800 rounded-xl p-4 hover:border-neutral-700 transition-colors">
                           <div className="flex items-center gap-3 mb-2">
                             <div className="p-1.5 bg-neutral-900 border border-neutral-800 rounded-lg">
@@ -454,16 +417,12 @@ function CaseStudyModal({
                           </div>
                           <div className="flex flex-wrap gap-1.5 ml-9">
                             {step.annotations.map((ann, j) => (
-                              <span
-                                key={j}
-                                className="text-[10px] font-mono px-2 py-0.5 bg-cyan-950/30 border border-cyan-900/30 text-cyan-400/70 rounded-md"
-                              >
+                              <span key={j} className="text-[10px] font-mono px-2 py-0.5 bg-cyan-950/30 border border-cyan-900/30 text-cyan-400/70 rounded-md">
                                 {ann}
                               </span>
                             ))}
                           </div>
                         </div>
-                        {/* Arrow connector */}
                         {i < study.architecture.length - 1 && (
                           <div className="flex flex-col items-center py-1">
                             <div className="w-px h-4 bg-neutral-800" />
@@ -475,161 +434,82 @@ function CaseStudyModal({
                     );
                   })}
                 </div>
-              </section>
+              </div>
 
-              {/* ── 4. Key Features ── */}
-              <section>
-                <SectionHeader icon={Layers} title="Key Features" number="04" />
-                <div className="space-y-4">
-                  {study.features.map((feature, i) => (
-                    <div
-                      key={i}
-                      className={`bg-neutral-950 border rounded-xl p-5 ${
-                        feature.highlight
-                          ? 'border-cyan-900/40 ring-1 ring-cyan-900/20'
-                          : 'border-neutral-900'
-                      }`}
-                    >
-                      <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
-                        {feature.highlight && <Shield className="w-4 h-4 text-cyan-400" />}
-                        {feature.title}
-                      </h4>
-                      {feature.highlight && (
-                        <p className="text-neutral-400 text-xs leading-relaxed mb-3 pl-4 border-l-2 border-cyan-900/40 italic">
-                          {feature.highlight}
-                        </p>
-                      )}
-                      <ul className="space-y-1.5">
-                        {feature.points.map((point, j) => (
-                          <li
-                            key={j}
-                            className="text-neutral-400 text-xs leading-relaxed flex items-start gap-2"
-                          >
-                            <span className="text-cyan-400/50 mt-1">▸</span>
-                            {point}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              </section>
-
-              {/* ── 5. Security Considerations (THE MAIN SECTION) ── */}
-              <section>
-                <SectionHeader icon={Shield} title="Security Considerations" number="05" />
-                <p className="text-neutral-500 text-xs mb-5 font-mono tracking-wide">
-                  Each security measure is paired with the specific threat it mitigates.
-                </p>
-                <div className="grid grid-cols-1 gap-3">
+              {/* ── Security ── */}
+              <div className="mb-8 pb-8 border-b border-neutral-900">
+                <SectionLabel>Security Measures</SectionLabel>
+                <p className="text-neutral-600 text-xs -mt-2 mb-5">Each one mapped to the threat it&apos;s there to stop.</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   {study.security.map((item, i) => (
-                    <div
-                      key={i}
-                      className="group bg-neutral-950 border border-neutral-900 hover:border-cyan-900/40 rounded-xl p-4 transition-all duration-300"
-                    >
-                      <div className="flex flex-col sm:flex-row sm:items-start gap-3">
-                        {/* Shield icon */}
-                        <div className="p-2 bg-cyan-950/30 border border-cyan-900/30 rounded-lg shrink-0 w-fit">
-                          <Shield className="w-4 h-4 text-cyan-400" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-sm font-semibold text-white mb-1">{item.measure}</h4>
-                          <p className="text-neutral-400 text-xs leading-relaxed mb-2">
-                            {item.implementation}
-                          </p>
-                          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-950/20 border border-red-900/30 rounded-lg">
-                            <AlertTriangle className="w-3 h-3 text-red-400/70" />
-                            <span className="text-[10px] font-mono text-red-400/80">
-                              Mitigates: {item.threat}
-                            </span>
-                          </div>
-                        </div>
+                    <div key={i} className="bg-neutral-950 border border-neutral-900 hover:border-neutral-800 rounded-xl p-3.5 transition-colors">
+                      <h4 className="text-xs font-semibold text-white mb-1.5">{item.measure}</h4>
+                      <p className="text-neutral-500 text-xs leading-relaxed mb-2">{item.implementation}</p>
+                      <div className="flex items-center gap-1">
+                        <span className="text-[9px] font-mono text-red-400/50">↳ mitigates:</span>
+                        <span className="text-[9px] font-mono text-red-400/60">{item.threat}</span>
                       </div>
                     </div>
                   ))}
                 </div>
-              </section>
+              </div>
 
-              {/* ── 6. Challenges & Solutions ── */}
-              <section>
-                <SectionHeader icon={AlertTriangle} title="Challenges & Solutions" number="06" />
+              {/* ── Challenges ── */}
+              <div className="mb-8 pb-8 border-b border-neutral-900">
+                <SectionLabel>The Tricky Bits</SectionLabel>
                 <div className="space-y-3">
                   {study.challenges.map((item, i) => (
-                    <div
-                      key={i}
-                      className="bg-neutral-950 border border-neutral-900 rounded-xl overflow-hidden"
-                    >
-                      {/* Problem */}
+                    <div key={i} className="bg-neutral-950 border border-neutral-900 rounded-xl overflow-hidden">
                       <div className="px-5 py-3 border-b border-neutral-900 flex items-start gap-3">
                         <span className="text-[10px] font-mono text-red-400 bg-red-950/30 px-2 py-0.5 rounded-md border border-red-900/30 shrink-0 mt-0.5">
                           PROBLEM
                         </span>
                         <span className="text-sm text-neutral-300">{item.problem}</span>
                       </div>
-                      {/* Solution */}
                       <div className="px-5 py-3 flex items-start gap-3">
                         <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/30 px-2 py-0.5 rounded-md border border-emerald-900/30 shrink-0 mt-0.5">
                           SOLUTION
                         </span>
-                        <span className="text-sm text-neutral-400 leading-relaxed">
-                          {item.solution}
-                        </span>
+                        <span className="text-sm text-neutral-400 leading-relaxed">{item.solution}</span>
                       </div>
                     </div>
                   ))}
                 </div>
-              </section>
+              </div>
 
-              {/* ── 7. Lessons Learned ── */}
-              <section>
-                <SectionHeader icon={Lightbulb} title="Lessons Learned" number="07" />
-                <div className="space-y-3">
-                  {study.lessonsLearned.map((lesson, i) => {
-                    const [bold, ...rest] = lesson.split(' — ');
-                    const description = rest.join(' — ');
-                    return (
-                      <div
-                        key={i}
-                        className="flex items-start gap-3 p-4 bg-neutral-950 border border-neutral-900 rounded-xl"
-                      >
-                        <span className="text-lg font-bold font-mono text-neutral-700 shrink-0 w-6 text-right">
-                          {String(i + 1).padStart(2, '0')}
-                        </span>
-                        <p className="text-sm text-neutral-300 leading-relaxed">
-                          <span className="font-semibold text-white">{bold}</span>
-                          {description && ` — ${description}`}
-                        </p>
-                      </div>
-                    );
-                  })}
-                </div>
-              </section>
+              {/* ── Lessons ── */}
+              <div className="mb-8 pb-8 border-b border-neutral-900">
+                <SectionLabel>What I Took Away</SectionLabel>
+                <ul className="space-y-2.5">
+                  {study.lessonsLearned.map((lesson, i) => (
+                    <li key={i} className="flex items-start gap-2.5 text-sm text-neutral-400 leading-relaxed">
+                      <span className="text-cyan-400/40 shrink-0 mt-0.5">—</span>
+                      <span>{lesson}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-              {/* ── 8. Future Improvements ── */}
-              <section>
-                <SectionHeader icon={Rocket} title="Future Improvements" number="08" />
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {/* ── Future ── */}
+              <div className="mb-8 pb-8 border-b border-neutral-900">
+                <SectionLabel>What&apos;s Next</SectionLabel>
+                <div className="flex flex-wrap gap-2">
                   {study.futureImprovements.map((item, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center gap-3 px-4 py-3 bg-neutral-950 border border-neutral-900 rounded-xl"
-                    >
-                      <div className="w-1.5 h-1.5 rounded-full bg-cyan-400/50 shrink-0" />
-                      <span className="text-sm text-neutral-400">{item}</span>
-                    </div>
+                    <span key={i} className="text-xs px-3 py-1.5 bg-neutral-950 border border-neutral-900 text-neutral-500 rounded-lg">
+                      {item}
+                    </span>
                   ))}
                 </div>
-              </section>
+              </div>
 
-              {/* ── 9. Conclusion ── */}
-              <section>
-                <SectionHeader icon={CheckCircle2} title="Conclusion" number="09" />
-                <div className="bg-neutral-950 border border-neutral-800 rounded-xl p-6">
-                  <p className="text-neutral-300 text-sm leading-relaxed italic">
-                    &ldquo;{study.conclusion}&rdquo;
-                  </p>
-                </div>
-              </section>
+              {/* ── Conclusion ── */}
+              <div>
+                <SectionLabel>Final Thoughts</SectionLabel>
+                <p className="text-neutral-300 text-sm leading-relaxed">
+                  {study.conclusion}
+                </p>
+              </div>
+
             </div>
 
             {/* Footer */}
