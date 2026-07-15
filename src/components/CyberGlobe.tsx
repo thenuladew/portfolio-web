@@ -280,10 +280,6 @@ export default function NeuralMesh() {
       const cy = H / 2;
       const sweepR = Math.max(W, H) * 0.75;
 
-      const grad = ctx.createConicalGradient
-        ? undefined  // standard API not widely available yet
-        : null;
-
       // Fallback: draw a slim arc sweep
       ctx.beginPath();
       ctx.moveTo(cx, cy);
