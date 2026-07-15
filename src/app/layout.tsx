@@ -1,21 +1,17 @@
 import type { Metadata } from 'next';
-import { Space_Grotesk, JetBrains_Mono } from 'next/font/google';
+import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import CustomCursor from '@/components/CustomCursor';
-import MouseSpotlight from '@/components/MouseSpotlight';
-import DataWave from '@/components/DataWave';
 
-const spaceGrotesk = Space_Grotesk({
-  variable: '--font-space-grotesk',
+const geistSans = Geist({
+  variable: '--font-geist-sans',
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
   display: 'swap',
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: '--font-jetbrains-mono',
+const geistMono = Geist_Mono({
+  variable: '--font-geist-mono',
   subsets: ['latin'],
-  weight: ['400', '500', '700'],
   display: 'swap',
 });
 
@@ -59,12 +55,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} h-full scroll-smooth`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full scroll-smooth`}
     >
-      <body className="font-sans bg-[#0b101a] text-[#f2f4f8] antialiased min-h-screen relative overflow-x-hidden">
-        {/* Global wave background */}
-        <DataWave />
-        <MouseSpotlight />
+      <body className="font-sans bg-[#090909] text-white antialiased min-h-screen relative overflow-x-hidden">
         {/* Dot+ring cursor for touch/coarse-pointer devices */}
         <CustomCursor />
         {children}

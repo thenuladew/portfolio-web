@@ -101,7 +101,7 @@ export default function NetworkTopology() {
         node.x = Math.max(0, Math.min(width, node.x));
         node.y = Math.max(0, Math.min(height, node.y));
 
-        ctx.fillStyle = 'rgba(178, 255, 29, 0.4)';
+        ctx.fillStyle = 'rgba(34, 211, 238, 0.4)';
         ctx.beginPath();
         ctx.arc(node.x, node.y, node.radius, 0, 2 * Math.PI);
         ctx.fill();
@@ -121,7 +121,7 @@ export default function NetworkTopology() {
 
           if (dist < CONNECT_DIST) {
             const alpha = (1 - dist / CONNECT_DIST) * 0.15;
-            ctx.strokeStyle = `rgba(178, 255, 29, ${alpha})`;
+            ctx.strokeStyle = `rgba(34, 211, 238, ${alpha})`;
             ctx.lineWidth = 0.6;
             ctx.beginPath();
             ctx.moveTo(n1.x, n1.y);
@@ -143,7 +143,7 @@ export default function NetworkTopology() {
 
           if (dist < cursorConnectDist) {
             const alpha = (1 - dist / cursorConnectDist) * 0.25;
-            ctx.strokeStyle = `rgba(178, 255, 29, ${alpha})`;
+            ctx.strokeStyle = `rgba(34, 211, 238, ${alpha})`;
             ctx.lineWidth = 0.85;
             ctx.beginPath();
             ctx.moveTo(mouseRef.current.x, mouseRef.current.y);
