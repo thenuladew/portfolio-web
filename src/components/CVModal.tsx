@@ -198,7 +198,7 @@ export default function CVModal({ isOpen, onClose }: CVModalProps) {
             }}
             exit={{ opacity: 0, scale: 0.96, y: 16 }}
             transition={{ type: 'spring', duration: 0.4, bounce: shake ? 0 : 0.15 }}
-            className="relative w-full max-w-sm bg-[#0b101a] border border-[#212634] rounded-2xl p-7 shadow-2xl overflow-hidden"
+            className="relative w-full max-w-sm bg-[#0c0c0c] border border-neutral-800 rounded-2xl p-7 shadow-2xl overflow-hidden"
           >
             {/* Ambient glow */}
             <div className="absolute -top-32 -left-32 w-64 h-64 bg-cyan-600/5 rounded-full blur-3xl pointer-events-none" />
@@ -207,23 +207,23 @@ export default function CVModal({ isOpen, onClose }: CVModalProps) {
             {/* Header */}
             <div className="relative flex items-start justify-between mb-6">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-[#161b28] border border-[#212634] rounded-xl">
+                <div className="p-2 bg-neutral-900 border border-neutral-800 rounded-xl">
                   {status === 'success' ? (
                     <ShieldCheck className="w-4 h-4 text-emerald-400" />
                   ) : status === 'locked' ? (
                     <ShieldAlert className="w-4 h-4 text-red-400" />
                   ) : (
-                    <Lock className="w-4 h-4 text-lime-400" />
+                    <Lock className="w-4 h-4 text-cyan-400" />
                   )}
                 </div>
                 <div>
                   <h2 className="text-sm font-semibold text-white tracking-wide">Recruiter Access</h2>
-                  <p className="text-[11px] text-[#6b7d8f] mt-0.5">Enter the access code to unlock resume</p>
+                  <p className="text-[11px] text-neutral-500 mt-0.5">Enter the access code to unlock resume</p>
                 </div>
               </div>
               <button
                 onClick={onClose}
-                className="text-[#4a5568] hover:text-white transition-colors p-1 rounded-lg hover:bg-[#161b28]"
+                className="text-neutral-600 hover:text-white transition-colors p-1 rounded-lg hover:bg-neutral-900"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -232,7 +232,7 @@ export default function CVModal({ isOpen, onClose }: CVModalProps) {
             {/* Form */}
             <form onSubmit={handleSubmit} className="relative space-y-4">
               <div>
-                <label htmlFor="cv-password" className="block text-[10px] font-mono tracking-widest uppercase text-[#6b7d8f] mb-2">
+                <label htmlFor="cv-password" className="block text-[10px] font-mono tracking-widest uppercase text-neutral-500 mb-2">
                   Access Code
                 </label>
                 <input
@@ -244,7 +244,7 @@ export default function CVModal({ isOpen, onClose }: CVModalProps) {
                   onChange={(e) => { setPassword(e.target.value); if (status === 'error') setStatus('idle'); }}
                   placeholder="••••••••"
                   autoComplete="off"
-                  className="w-full bg-[#111] border border-[#212634] focus:border-lime-400/60 rounded-xl px-4 py-3 text-white placeholder-neutral-700 focus:outline-none focus:ring-1 focus:ring-lime-400/20 transition-all text-center tracking-widest font-mono text-sm disabled:opacity-40"
+                  className="w-full bg-[#111] border border-neutral-800 focus:border-cyan-400/60 rounded-xl px-4 py-3 text-white placeholder-neutral-700 focus:outline-none focus:ring-1 focus:ring-cyan-400/20 transition-all text-center tracking-widest font-mono text-sm disabled:opacity-40"
                 />
               </div>
 
@@ -299,12 +299,12 @@ export default function CVModal({ isOpen, onClose }: CVModalProps) {
             </form>
 
             {/* Footer */}
-            <div className="relative mt-5 pt-4 border-t border-[#1a1f2e] flex justify-between items-center">
-              <span className="text-[9px] font-mono text-[#4a5568] uppercase tracking-widest">
+            <div className="relative mt-5 pt-4 border-t border-neutral-900 flex justify-between items-center">
+              <span className="text-[9px] font-mono text-neutral-600 uppercase tracking-widest">
                 SHA-256 · Server-Verified
               </span>
               {attemptsLeft !== null && status !== 'locked' && (
-                <span className="text-[9px] font-mono text-[#4a5568]">
+                <span className="text-[9px] font-mono text-neutral-600">
                   {attemptsLeft}/5 remaining
                 </span>
               )}

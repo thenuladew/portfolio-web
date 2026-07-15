@@ -1,61 +1,55 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 
 /**
- * CustomCursor — neon crosshair dot + ring.
- * Active on ALL pointer devices; on touch coarse-pointer, keeps dot only.
- * Desktop gets a smooth spring-lagged ring + inner dot with trailing glow.
+ * CustomCursor — dot + ring component.
+ * Only rendered on coarse-pointer / touch devices (e.g. tablets with stylus).
+ * Desktop users get the CSS SVG arrow cursor via globals.css.
  */
 export default function CustomCursor() {
-  const hovered = useRef(false);
-  const visible = useRef(false);
+  const [isCoarse, setIsCoarse] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const reducedMotion = useRef(false);
 
-  const dotX = useMotionValue(-200);
-  const dotY = useMotionValue(-200);
-  const springCfg = { damping: 22, stiffness: 300, mass: 0.4 };
-  const ringX = useSpring(dotX, springCfg);
-  const ringY = useSpring(dotY, springCfg);
+  const mouseX = useMotionValue(-200);
+  const mouseY = useMotionValue(-200);
 
-  // Framer values for ring scale and glow
-  const ringScale = useMotionValue(1);
-  const ringOpacity = useMotionValue(0);
+  const springCfg = { damping: 28, stiffness: 240, mass: 0.5 };
+  const cursorX = useSpring(mouseX, springCfg);
+  const cursorY = useSpring(mouseY, springCfg);
 
   useEffect(() => {
-    const move = (e: MouseEvent) => {
-      dotX.set(e.clientX);
-      dotY.set(e.clientY);
-      if (!visible.current) {
-        visible.current = true;
-        ringOpacity.set(1);
-      }
-    };
+    // Only activate on coarse-pointer devices
+    const coarse = window.matchMedia('(pointer: coarse)').matches;
+    setIsCoarse(coarse);
+    reducedMotion.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!coarse) return;
 
-    const hide = () => {
-      ringOpacity.set(0);
-      visible.current = false;
+    const move = (e: MouseEvent) => {
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
+      setVisible(true);
     };
-    const show = () => {
-      ringOpacity.set(1);
-      visible.current = true;
-    };
+    const hide = () => setVisible(false);
+    const show = () => setVisible(true);
 
     const detectHover = (e: MouseEvent) => {
       const t = e.target as HTMLElement;
-      const isInteractive =
+      setHovered(
         t.tagName === 'A' ||
         t.tagName === 'BUTTON' ||
         !!t.closest('a') ||
         !!t.closest('button') ||
         !!t.closest('[role="button"]') ||
         t.tagName === 'INPUT' ||
-        t.tagName === 'TEXTAREA';
-      hovered.current = isInteractive;
-      ringScale.set(isInteractive ? 1.8 : 1);
+        t.tagName === 'TEXTAREA'
+      );
     };
 
-    window.addEventListener('mousemove', move, { passive: true });
+    window.addEventListener('mousemove', move);
     document.addEventListener('mouseleave', hide);
     document.addEventListener('mouseenter', show);
     document.addEventListener('mouseover', detectHover);
@@ -66,38 +60,27 @@ export default function CustomCursor() {
       document.removeEventListener('mouseenter', show);
       document.removeEventListener('mouseover', detectHover);
     };
-  }, [dotX, dotY, ringOpacity, ringScale]);
+  }, [mouseX, mouseY]);
+
+  if (!isCoarse || !visible) return null;
 
   return (
     <>
-      {/* Inner neon dot */}
+      {/* Inner dot */}
       <motion.div
-        className="fixed top-0 left-0 w-1.5 h-1.5 rounded-full pointer-events-none z-[9999]"
-        style={{
-          x: dotX,
-          y: dotY,
-          translateX: '-50%',
-          translateY: '-50%',
-          backgroundColor: '#b2ff1d',
-          boxShadow: '0 0 6px rgba(178,255,29,0.9), 0 0 12px rgba(178,255,29,0.4)',
-          opacity: ringOpacity,
-        }}
+        className="fixed top-0 left-0 w-2 h-2 bg-cyan-400 rounded-full pointer-events-none z-[9999]"
+        style={{ x: mouseX, y: mouseY, translateX: '-50%', translateY: '-50%' }}
       />
-      {/* Outer lagged ring */}
+      {/* Outer ring */}
       <motion.div
-        className="fixed top-0 left-0 w-9 h-9 rounded-full pointer-events-none z-[9998]"
-        style={{
-          x: ringX,
-          y: ringY,
-          translateX: '-50%',
-          translateY: '-50%',
-          scale: ringScale,
-          opacity: ringOpacity,
-          border: '1px solid rgba(178,255,29,0.5)',
-          backgroundColor: 'rgba(178,255,29,0.03)',
-          boxShadow: '0 0 8px rgba(178,255,29,0.15)',
+        className="fixed top-0 left-0 w-8 h-8 border border-cyan-400/50 rounded-full pointer-events-none z-[9999]"
+        style={{ x: cursorX, y: cursorY, translateX: '-50%', translateY: '-50%' }}
+        animate={reducedMotion.current ? {} : {
+          scale: hovered ? 1.7 : 1,
+          backgroundColor: hovered ? 'rgba(34,211,238,0.08)' : 'transparent',
+          borderColor: hovered ? 'rgba(34,211,238,0.8)' : 'rgba(34,211,238,0.4)',
         }}
-        transition={{ type: 'tween', duration: 0.1 }}
+        transition={{ type: 'tween', duration: 0.12 }}
       />
     </>
   );
