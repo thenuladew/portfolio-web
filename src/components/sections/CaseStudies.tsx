@@ -179,11 +179,7 @@ const DIFF_STYLES = {
 };
 
 function DiffBadge({ level }: { level: CaseStudy['difficulty'] }) {
-  return (
-    <span className={`text-[9px] font-mono px-2 py-0.5 rounded border tracking-widest uppercase ${DIFF_STYLES[level]}`}>
-      {level}
-    </span>
-  );
+  return null;
 }
 
 /* ─── Terminal Section Label ─── */

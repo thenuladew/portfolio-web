@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Key } from 'lucide-react';
+import CyberDashboard from '@/components/CyberDashboard';
 
 interface HeroProps {
   onOpenCV: () => void;
@@ -161,7 +162,7 @@ export default function Hero({ onOpenCV }: HeroProps) {
             {[
               { value: 'BSc IT', label: 'Cybersec Spec.' },
               { value: 'SLIIT', label: 'University' },
-              { value: '2025', label: 'Expected Grad.' },
+              { value: '2027', label: 'Expected Grad.' },
             ].map(({ value, label }) => (
               <div key={label} className="flex flex-col gap-0.5">
                 <span className="text-sm font-mono font-bold text-white">{value}</span>
@@ -169,6 +170,16 @@ export default function Hero({ onOpenCV }: HeroProps) {
               </div>
             ))}
           </motion.div>
+        </motion.div>
+
+        {/* Right side — Cyber SOC Dashboard */}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.5, ease: 'easeOut' }}
+          className="hidden lg:block lg:col-span-5 w-full"
+        >
+          <CyberDashboard />
         </motion.div>
       </div>
 

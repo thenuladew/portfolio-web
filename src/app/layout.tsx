@@ -3,7 +3,7 @@ import { Space_Grotesk, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import CustomCursor from '@/components/CustomCursor';
 import MouseSpotlight from '@/components/MouseSpotlight';
-import DataWave from '@/components/DataWave';
+import ParticleField from '@/components/ParticleField';
 
 const spaceGrotesk = Space_Grotesk({
   variable: '--font-space-grotesk',
@@ -62,8 +62,8 @@ export default function RootLayout({
       className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} h-full scroll-smooth`}
     >
       <body className="font-sans bg-[#0b101a] text-[#f2f4f8] antialiased min-h-screen relative overflow-x-hidden">
-        {/* Global wave background */}
-        <DataWave />
+        {/* Global interactive background effects */}
+        <ParticleField />
         <MouseSpotlight />
         {/* Dot+ring cursor for touch/coarse-pointer devices */}
         <CustomCursor />
